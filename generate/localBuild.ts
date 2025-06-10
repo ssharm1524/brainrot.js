@@ -53,7 +53,7 @@ async function main() {
 
 	const videoMode = 'brainrot' as VideoMode;
 	const agentA = 'BARACK_OBAMA';
-	const agentB = 'JORDAN_PETERSON';
+	const agentB = 'JOE_ROGAN';
 	const outputType = 'audio' as 'audio' | 'video';
 	const songName = 'Family Matters';
 	const artistName = 'Drake';
@@ -85,7 +85,7 @@ async function main() {
 			break;
 		case 'brainrot':
 			videoTopic =
-				'obama wants to talk about waifu titties but jordan peterson wants to talk about how he does not support indian immigration into america. obama calls jordan a racist but jordan calls obama out for marrying michelle, or as jordan calls him michael because he thinks michelle obama is a born male. and obama claps back saying how he "did" mikhaila';
+				'How Object Oriented Programming Works';
 			const music = 'WII_SHOP_CHANNEL_TRAP';
 			await generateBrainrot({
 				local,

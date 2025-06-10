@@ -152,16 +152,6 @@ export const BrainrotComposition: React.FC<BrainrotSchemaType> = ({
 							/>
 						)}
 						<div
-							className="absolute flex flex-col items-center gap-2 opacity-[65%] z-30 bottom-12 right-12 text-white font-bold text-7xl"
-							style={{
-								textShadow: '4px 4px 0px #000000',
-								WebkitTextStroke: '2px black',
-							}}
-						>
-							brainrotjs
-							<br></br>.com 🧠
-						</div>
-						<div
 							className={`absolute left-0 right-0 flex flex-row p-8 z-30 transition-all duration-500 ease-in-out ${
 								currentSubtitle ? '-bottom-28' : '-bottom-[1000px]'
 							} ${

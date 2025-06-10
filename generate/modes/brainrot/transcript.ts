@@ -23,40 +23,63 @@ async function generateBrainrotTranscript(
 
 	try {
 		console.log('🤖 Creating Groq chat completion...');
-		const completion = await groq.chat.completions.create({
-			messages: [
-				{
-					role: 'system',
-					content: `Create a dialogue for a short-form conversation on the topic of ${topic}. The conversation should be between two agents, ${agentA.replace(
-						'_',
-						' '
-					)} and ${agentB}, who should act as extreme, over-the-top caricatures of themselves with wildly exaggerated personality traits and mannerisms. ${agentA.replace(
-						'_',
-						' '
-					)} and ${agentB.replace(
-						'_',
-						' '
-					)} should both be absurdly vulgar and crude in their language, cursing excessively and making outrageous statements to the point where it becomes almost comically over-the-top. The dialogue should still provide insights into ${topic} but do so in the most profane and shocking way possible. Limit the dialogue to a maximum of ${7} exchanges, aiming for a concise transcript that would last for 1 minute. The agentId attribute should either be ${agentA} or ${agentB}. The text attribute should be that character's line of dialogue. Make it as edgy and controversial as possible while still being funny. Remember, ${agentA} and ${agentB} are both ${agentA.replace(
-						'_',
-						' '
-					)} and ${agentB.replace(
-						'_',
-						' '
-					)} behaving like they would in real life, but more inflammatory. The JSON format WHICH MUST BE ADHERED TO ALWAYS is as follows: { transcript: { [ {'agentId': 'the exact value of ${agentA} or ${agentB} depending on who is talking', 'text': 'their line of conversation in the dialog'} ] } }`,
-				},
-				{
-					role: 'user',
-					content: `generate a video about ${topic}. Both the agents should talk about it in a way they would, but extremify their qualities and make the conversation risque so that it would be interesting to watch and edgy.`,
-				},
-			],
-			response_format: { type: 'json_object' },
-			model: 'llama3-70b-8192',
-			temperature: 0.5,
-			max_tokens: 4096,
-			top_p: 1,
-			stop: null,
-			stream: false,
-		});
+    const agentASpaced = agentA.replace("_", " ");
+    const agentBSpaced = agentB.replace("_", " ");
+
+    const completion = await groq.chat.completions.create({
+      messages: [
+        {
+          role: 'system',
+          content: 
+          `
+            You are an expert dialogue generator for educational short-form videos written in podcast conversation style. You must create a back-and-forth script between two agents:
+
+            - ${agentASpaced} is a **curious student** who is inquisitive and frantic. They ask meaningful, bold, silly, and/or exaggerated questions to hook the audience.
+            - ${agentBSpaced} is an **expert teacher** and master of the topic who can explain the topic with extreme certainty, fun analogies, and occasional wild metaphors.
+
+            ${agentBSpaced} will directly answer the questions asked by ${agentASpaced} about the topic in an enlightening, engaging, and humorous way. 
+            Both agents are **caricatures of themselves**, behaving as exaggerated versions of their real-life personas with their actual mannerisms and styles of speech turned up to 11.
+
+            The dialogue must:
+            - Lead to short form video that is **no more than 60 seconds**
+            - Contain **no more than 7 exchanges**
+            - Start with ${agentASpaced} asking an **attention-grabbing intro question(s)** with ${agentBSpaced}'s name in it about the topic to hook viewers
+            - Focus **75% on clearly explaining the topic**, and **25% on wild humor or entertainment**
+            - Include slang/cursing only when it helps audience retention, pacing, or comic effect
+            - Be suitable for a **wide, non-expert audience**, using vivid analogies and step-by-step simplification without sacrificing accuracy or depth.
+
+            The agentId attribute should either be ${agentA} or ${agentB}. The text attribute should be that character's line of dialogue. Make it as humourous and engaging as possible while still being informative and educational. Remember, ${agentA} and ${agentB} are both ${agentASpaced} and ${agentBSpaced} behaving like they would in real life.
+
+            The JSON format WHICH MUST BE ADHERED TO ALWAYS is as follows:
+            {
+              "transcript": [
+                { "agentId": "the exact value of ${agentA} or ${agentB} depending on who is talking", "text": "their line of conversation in the dialog" }
+              ]
+            }
+          `
+        },
+        {
+          role: 'user',
+          content: 
+          `
+            Generate a 60-second podcast-style dialogue on the topic: "${topic}"
+            ${agentASpaced} (agentId: ${agentA}) should begin with a dramatic, funny, or ridiculous intro question about ${topic} that grabs the viewer's attention immediately.
+            Then, ${agentBSpaced} (agentId: ${agentB}) should respond confidently, explaining the topic using analogies, humor, and simplification — but keeping everything technically accurate.
+            The rest of the dialogue should alternate, with ${agentASpaced} reacting with exaggerated curiosity or shock, and ${agentBSpaced} continuing to break down the topic.
+            Be outrageous, yes — but make the educational content *amazing*. Prioritize clarity, audience understanding, and momentum. Use slang, memes, or funny metaphors only when it adds entertainment *without derailing the topic*.
+            Follow the required JSON format and keep the exchange count at 7 or less.
+          `
+        }
+      ],
+      response_format: { type: 'json_object' },
+      model: 'llama3-70b-8192',
+      temperature: 0.5,
+      max_tokens: 2048,
+      top_p: 1,
+      stop: null,
+      stream: false
+    });
+
 
 		console.log('✅ Chat completion received');
 		const content = completion.choices[0]?.message?.content || '';
